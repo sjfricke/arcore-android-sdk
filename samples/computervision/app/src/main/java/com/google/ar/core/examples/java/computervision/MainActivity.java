@@ -22,7 +22,7 @@ import android.content.pm.PackageManager;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.design.widget.BaseTransientBottomBar;
+//import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -298,11 +298,10 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
                         mMessageSnackbar.dismiss();
                     }
                 });
-            mMessageSnackbar.addCallback(
-                new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                    @Override
+            mMessageSnackbar.setCallback(
+                new Snackbar.Callback() {
                     public void onDismissed(Snackbar transientBottomBar, int event) {
-                        super.onDismissed(transientBottomBar, event);
+                        onDismissed(transientBottomBar, event);
                         finish();
                     }
                 });

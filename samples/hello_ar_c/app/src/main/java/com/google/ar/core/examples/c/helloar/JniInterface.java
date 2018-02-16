@@ -25,6 +25,8 @@ public class JniInterface {
 
   public static native void onResume(long nativeApplication);
 
+  public static native void testing(long nativeApplication);
+
   /** Allocate OpenGL resources for rendering. */
   public static native void onGlSurfaceCreated(long nativeApplication);
 

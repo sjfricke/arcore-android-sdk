@@ -10,13 +10,13 @@ def arcore_libpath = "${buildDir}/arcore-native"
 configurations { natives }
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 24
     defaultConfig {
         applicationId "com.google.ar.core.examples.c.helloar"
 
         // 24 is the minimum since ARCore only works with 24 and higher.
         minSdkVersion 24
-        targetSdkVersion 27
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
 
@@ -50,8 +50,8 @@ dependencies {
     implementation 'com.google.ar:core:0.91.0'
     natives 'com.google.ar:core:0.91.0'
 
-    implementation 'com.android.support:appcompat-v7:27.0.2'
-    implementation 'com.android.support:design:27.0.2'
+    implementation 'com.android.support:appcompat-v7:24.2.1'
+    implementation 'com.android.support:design:24.2.1'
 }
 
 // Extracts the shared libraries from aars in the natives configuration.

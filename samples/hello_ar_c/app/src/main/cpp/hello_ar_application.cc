@@ -63,11 +63,21 @@ HelloArApplication::HelloArApplication(AAssetManager* asset_manager, void* env,
 
   ArFrame_create(ar_session_, &ar_frame_);
   CHECK(ar_frame_);
+
+  ArPose_create(ar_session_, pose_data, &m_pose);
+  CHECK(m_pose);
+
+  ws = std::shared_ptr <WebSocket>(WebSocket::from_url("ws://24.240.32.197:6419"));
+
+  CHECK(ws);
+
+  rec_thread = std::thread(&HelloArApplication::handle_message, this);
 }
 
 HelloArApplication::~HelloArApplication() {
   ArSession_destroy(ar_session_);
   ArFrame_destroy(ar_frame_);
+  ArPose_destroy(m_pose);
 }
 
 void HelloArApplication::OnPause() {
@@ -125,6 +135,17 @@ void HelloArApplication::OnDrawFrame() {
                                /*near=*/0.1f, /*far=*/100.f,
                                glm::value_ptr(projection_mat));
 
+//  if (test == 0) {
+//    ArCamera_getDisplayOrientedPose(ar_session_, ar_camera, m_pose);
+//    ArPose_getPoseRaw(ar_session_, m_pose, pose_data);
+//    LOGI("ArPose - X: %f \tY: %f \t Z: %f", pose_data[4], pose_data[5], pose_data[6]);
+//  } else {
+//    test++;
+//    if (test > 30) {
+//      test = 0;
+//    }
+//  }
+
   ArCamera_release(ar_camera);
 
   background_renderer_.Draw(ar_session_, ar_frame_);
@@ -156,7 +177,7 @@ void HelloArApplication::OnDrawFrame() {
     if (tracking_state == AR_TRACKING_STATE_TRACKING) {
       // Render object only if the tracking state is AR_TRACKING_STATE_TRACKING.
       util::GetTransformMatrixFromAnchor(ar_session_, obj_iter, &model_mat);
-      andy_renderer_.Draw(projection_mat, view_mat, model_mat, light_intensity);
+      andy_renderer_.Draw(projection_mat, view_mat, model_mat, m_light_intensity);
     }
   }
 
@@ -215,6 +236,7 @@ void HelloArApplication::OnTouched(float x, float y) {
     int32_t hit_result_list_size = 0;
     ArHitResultList_getSize(ar_session_, hit_result_list,
                             &hit_result_list_size);
+
 
     // The hitTest method sorts the resulting list by distance from the camera,
     // increasing.  The first hit result will usually be the most relevant when
@@ -275,6 +297,35 @@ void HelloArApplication::OnTouched(float x, float y) {
 
     ArHitResultList_destroy(hit_result_list);
     hit_result_list = nullptr;
+  }
+}
+
+void HelloArApplication::testing() {
+
+
+  ws.operator*().send("Hello");
+  ws.operator*().send("test");
+
+//
+//  ArCamera* ar_camera;
+//  ArFrame_acquireCamera(ar_session_, ar_frame_, &ar_camera);
+//  ArCamera_getPose(ar_session_, ar_camera, m_pose);
+//  ArPose_getPoseRaw(ar_session_, m_pose, pose_data);
+//  LOGI("ArPose - X: %f \tY: %f \t Z: %f", pose_data[4], pose_data[5], pose_data[6]);
+//  if (m_light_intensity <= 0.0f) { m_light_intensity = 1.0f; }
+//  else {m_light_intensity -= 0.1f;}
+}
+
+void HelloArApplication::handle_message() {
+  LOGI("WebSocket Thread");
+  CHECK(ws);
+  while (ws.operator*().getReadyState() != WebSocket::CLOSED) {
+
+    WebSocket::pointer wsp = &*ws; // <-- because a unique_ptr cannot be copied into a lambda
+    ws.operator*().poll();
+    ws.operator*().dispatch([wsp](const std::string &message) {
+      LOGI(">>> %s\n", message.c_str());
+    });
   }
 }
 

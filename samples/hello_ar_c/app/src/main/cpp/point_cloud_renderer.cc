@@ -23,7 +23,7 @@ constexpr char kVertexShader[] = R"(
     attribute vec4 vertex;
     uniform mat4 mvp;
     void main() {
-      gl_PointSize = 5.0;
+      gl_PointSize = 30.0;
       // Pointcloud vertex's w component is confidence value.
       // Not used in renderer.
       gl_Position = mvp * vec4(vertex.xyz, 1.0);

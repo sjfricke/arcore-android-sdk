@@ -94,6 +94,11 @@ JNI_METHOD(jboolean, hasDetectedPlanes)
       native(native_application)->HasDetectedPlanes() ? JNI_TRUE : JNI_FALSE);
 }
 
+JNI_METHOD(void, testing)
+(JNIEnv , jclass, jlong native_application) {
+  native(native_application)->testing();
+}
+
 JNIEnv *GetJniEnv() {
   JNIEnv *env;
   jint result = g_vm->AttachCurrentThread(&env, nullptr);

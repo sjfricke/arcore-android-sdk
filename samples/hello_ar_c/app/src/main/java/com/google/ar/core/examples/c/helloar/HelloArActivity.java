@@ -28,6 +28,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Toast;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -79,6 +80,13 @@ public class HelloArActivity extends AppCompatActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     mSurfaceView = (GLSurfaceView) findViewById(R.id.surfaceview);
+
+    final Button button = (Button) findViewById(R.id.button);
+    button.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        JniInterface.testing(mNativeApplication);
+      }
+    });
 
     // Set up tap listener.
     mGestureDetector =
